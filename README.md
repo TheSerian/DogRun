@@ -10,7 +10,7 @@ O jogador controla um cachorro que corre automaticamente pelo cenário e pode pu
 
 Este projeto está sendo desenvolvido como parte da **2ª Verificação de Aprendizagem** da disciplina de **Computação Gráfica**, ministrada pelo **Professor Dr. Ícaro Lins Leitão da Cunha**.
 
-O objetivo é aplicar na prática os conceitos fundamentais de computação gráfica utilizando OpenGL, além de demonstrar organização de projeto, estrutura de código reminder e uso de estruturas de dados para representar entidades gráficas.
+O objetivo é aplicar na prática os conceitos fundamentais de computação gráfica utilizando OpenGL, além de demonstrar organização de projeto, estrutura de código e uso de estruturas de dados.
 
 ---
 
@@ -24,15 +24,6 @@ O jogo segue a mecânica clássica de *endless runner*:
 - A velocidade aumenta com o tempo
 - O jogo termina ao colidir com um obstáculo
 
-Mesmo sendo 2D, o projeto utiliza conceitos típicos de renderização gráfica como:
-
-- Sistema de coordenadas
-- Transformações (translação e escala)
-- Loop de renderização
-- Detecção de colisão
-- Estrutura de entidades gráficas
-
----
 
 ## Padrão de Projeto
 
