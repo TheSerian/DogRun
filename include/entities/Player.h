@@ -9,9 +9,10 @@
 
 enum class PlayerState {
     IDLE,
-    RUNNING
+    RUNNING,
     GAME_OVER
-}
+};
+
 class Player : public Entity
 {
 public:
