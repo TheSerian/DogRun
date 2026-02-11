@@ -7,7 +7,7 @@ Game::Game(int width, int height)
 {
     renderer = new Renderer2D(screenWidth, screenHeight);
 
-    player = new Player({100.0f, 100.0f}, {50.0f, 50.0f});
+    player = new Player({100.0f, 100.0f}, {50.0f, 50.0f}, *renderer);
     entities.push_back(player);
 }
 

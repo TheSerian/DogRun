@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include "Renderer2D.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -6,10 +8,10 @@
 #include <iostream>
 
 static float vertices[] = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f
+    0.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 0.0f
 };
 
 static unsigned int indices[] = {
@@ -38,8 +40,11 @@ Renderer2D::Renderer2D(int screenWidth, int screenHeight)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 }
@@ -52,7 +57,7 @@ Renderer2D::~Renderer2D()
     glDeleteProgram(shaderProgram);
 }
 
-void Renderer2D::DrawRect(float x, float y, float width, float height, glm::vec3 color)
+void Renderer2D::DrawSprite(unsigned int textureID, float x, float y, float width, float height, glm::vec3 color)
 {
     glUseProgram(shaderProgram);
 
@@ -74,6 +79,12 @@ void Renderer2D::DrawRect(float x, float y, float width, float height, glm::vec3
         glGetUniformLocation(shaderProgram, "color"),
         1, glm::value_ptr(color)
     );
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    glUniform3fv(glGetUniformLocation(shaderProgram, "spriteColor"), 1, glm::value_ptr(color));
+    glUniform1i(glGetUniformLocation(shaderProgram, "image"), 0);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -111,4 +122,28 @@ unsigned int Renderer2D::LoadShader(const char* vertexPath, const char* fragment
     glDeleteShader(fragment);
 
     return program;
+}
+
+unsigned int Renderer2D::LoadTexture(const char* path) {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    int width, height, nrChannels;
+
+    unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
+    if (data) {
+        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Falha ao carregar sprite. " << path << std::endl;
+    }
+    stbi_image_free(data);
+    return textureID;
 }

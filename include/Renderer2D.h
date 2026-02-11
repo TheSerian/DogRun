@@ -9,8 +9,9 @@ public:
     Renderer2D(int screenWidth, int screenHeight);
     ~Renderer2D();
 
-    void DrawRect(float x, float y, float width, float height, glm::vec3 color);
-
+    void DrawSprite(unsigned int textureID, float x, float y, float width, float height, glm::vec3 color = glm::vec3(1.0f));
+    unsigned int LoadTexture(const char* path);
+    
 private:
     unsigned int VAO, VBO, EBO;
     unsigned int shaderProgram;
