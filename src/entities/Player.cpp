@@ -1,16 +1,36 @@
 #include "entities/Player.h"
 #include "Renderer2D.h"
 
-Player::Player(glm::vec2 pos, glm::vec2 size)
+Player::Player(glm::vec2 pos, glm::vec2 size, Renderer2D& renderer)
     : Entity(pos, size),
       velocityY(0.0f),
       speedX(300.0f),
-      onGround(true)
+      onGround(true),
+      currentState(PlayerState::IDLE),
+      animationTimer(0.0f),
+      useRunFrame1(true)
 {
+    textureIdle = renderer.LoadTexture("textures/dog_idle.png");
+    textureRun1 = renderer.LoadTexture("textures/dog_walk1.png");
+    textureRun2 = renderer.LoadTexture("textures/dog_walk2.png");
+    textureHit = renderer.LoadTexture("textures/dog_dead.png");
 }
 
 void Player::ProcessInput(GLFWwindow* window)
 {
+
+    if (currentState == PlayerState::GAME_OVER) return;
+
+    if (currentState == PlayerState::IDLE){
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS ||
+            glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS ||
+            glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        {
+            currentState = PlayerState::RUNNING;
+        }   
+    }
+
+    //movimentaçao lateral
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS ||
         glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
@@ -23,10 +43,12 @@ void Player::ProcessInput(GLFWwindow* window)
         position.x += speedX * 0.016f;
     }
 
+    //pulo
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && onGround)
     {
         velocityY = 400.0f;
         onGround = false;
+        if (currentState == PlayerState::IDLE) currentState = PlayerState::RUNNING;
     }
 }
 
@@ -42,9 +64,38 @@ void Player::Update(float deltaTime)
         velocityY = 0.0f;
         onGround = true;
     }
+
+    if (currentState == PlayerState::RUNNING){
+        animationTimer += deltaTime;
+
+        if (animationTimer >= 0.1f){
+            animationTimer = 0.0f;
+            useRunFrame1 = !useRunFrame1;
+        }
+    }
 }
 
 void Player::Render(Renderer2D& renderer)
 {
-    renderer.DrawRect(position.x, position.y, size.x, size.y, {1.0f, 1.0f, 1.0f});
+    unsigned int currentTexture = textureIdle;
+
+    switch (currentState)
+    {
+        case PlayerState::IDLE:
+            currentTexture = textureIdle;
+            break;
+
+        case PlayerState::RUNNING:
+            if (!onGround){
+                currentTexture = textureRun2;
+            } else {
+                currentTexture = useRunFrame1 ? textureRun1 : textureRun2;
+            }
+            break;
+        
+        case PlayerState::GAME_OVER:
+        currentTexture = textureHit;
+        break;
+    }
+    renderer.DrawSprite(currentTexture, position.x, position.y, size.x, size.y);
 }
