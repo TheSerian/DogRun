@@ -57,9 +57,9 @@ void Player::Update(float deltaTime)
     velocityY -= 800.0f * deltaTime;
     position.y += velocityY * deltaTime;
 
-    if (position.y <= 100.0f)
+    if (position.y <= 300.0f)
     {
-        position.y = 100.0f;
+        position.y = 300.0f;
         velocityY = 0.0f;
         onGround = true;
     }
