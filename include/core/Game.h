@@ -7,6 +7,7 @@
 
 #include "entities/Entity.h"
 #include "entities/Player.h"
+#include "entities/Obstacle.h"
 #include "Renderer2D.h"
 
 enum class GameState
@@ -36,8 +37,15 @@ private:
     std::vector<Entity*> entities;
     Player* player;
 
+    unsigned int textureDogDead;
     unsigned int textureGroundBottom;
     unsigned int textureGroundTop;
+    unsigned int textureObstacle;
+
+    float spawnTimer = 0.0f;
+    float spawnInterval = 2.0f;
+
+    bool CheckCollision(Entity* one, Entity* two);
 };
 
 #endif
