@@ -3,10 +3,7 @@
 Player::Player(glm::vec2 pos, glm::vec2 size, Renderer2D& renderer)
     : Entity(pos, size),
       velocityY(0.0f),
-      speedX(200.0f),      
       onGround(true),
-      moveLeft(false),
-      moveRight(false),
       currentState(PlayerState::IDLE),
       animationTimer(0.0f),
       useRunFrame1(true)
@@ -23,29 +20,17 @@ void Player::ProcessInput(GLFWwindow* window)
         return;
 
     if (currentState == PlayerState::IDLE){
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS ||
-            glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS ||
-            glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         {
             currentState = PlayerState::RUNNING;
         }   
     }
 
-    moveLeft =
-        glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS ||
-        glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS;
-
-    moveRight =
-        glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS ||
-        glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS;
-
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && onGround)
     {
         velocityY = 400.0f;
         onGround = false;
-
-        if (currentState == PlayerState::IDLE)
-            currentState = PlayerState::RUNNING;
+        currentState = PlayerState::RUNNING;
     }
 }
 
@@ -63,12 +48,6 @@ void Player::Update(float deltaTime)
         velocityY = 0.0f;
         onGround = true;
     }
-
-    if (moveLeft)
-        position.x -= speedX * deltaTime;
-
-    if (moveRight)
-        position.x += speedX * deltaTime;
 
     if (currentState == PlayerState::RUNNING){
         animationTimer += deltaTime;

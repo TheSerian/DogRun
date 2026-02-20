@@ -12,6 +12,7 @@
 
 enum class GameState
 {
+    IDLE,
     Playing,
     GameOver
 };
@@ -25,6 +26,7 @@ public:
     void ProcessInput(GLFWwindow* window);
     void Update(float deltaTime);
     void Render();
+    void Reset();
 
 private:
     GameState state;
@@ -41,9 +43,17 @@ private:
     unsigned int textureGroundBottom;
     unsigned int textureGroundTop;
     unsigned int textureObstacle;
+    unsigned int textureGameOver;
+    unsigned int textureRestart;
 
+    std::vector<Obstacle> obstacles;
     float spawnTimer = 0.0f;
     float spawnInterval = 2.0f;
+
+    float score;
+
+    float gameSpeed;
+    float initialGameSpeed;
 
     bool CheckCollision(Entity* one, Entity* two);
 };
