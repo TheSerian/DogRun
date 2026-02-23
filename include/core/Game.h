@@ -28,6 +28,8 @@ public:
     void Render();
     void Reset();
 
+    int GetScore() const;
+
 private:
     GameState state;
 

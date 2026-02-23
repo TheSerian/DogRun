@@ -209,3 +209,9 @@ void Game::Reset()
     spawnInterval = 2.0f;
     gameSpeed = initialGameSpeed;
 }
+
+int Game::GetScore() const
+{
+    return static_cast<int>(score);
+}
+
