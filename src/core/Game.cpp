@@ -61,28 +61,29 @@ void Game::ProcessInput(GLFWwindow* window)
 void Game::Update(float deltaTime)
 {
     if (state != GameState::Playing)
-        return;
+    return;
+
+    score += deltaTime * 10.0f;
+
+    difficultyMultiplier = 1.0f + (score / 400.0f);
+    gameSpeed = initialGameSpeed * difficultyMultiplier;
+
+    spawnInterval = baseSpawnInterval / difficultyMultiplier;
 
     spawnTimer += deltaTime;
 
     if (spawnTimer >= spawnInterval)
-    {
-        Obstacle* newObstacle = new Obstacle(
-            {800.0f, 300.0f},
-            {50.0f, 50.0f},
-            200.0f,
-            textureObstacle
-        );
+{
+    Obstacle* newObstacle = new Obstacle(
+        {800.0f, 300.0f},
+        {50.0f, 50.0f},
+        gameSpeed,
+        textureObstacle
+    );
 
-        entities.push_back(newObstacle);
-        spawnTimer = 0.0f;
-
-        float minTime = 1.0f;
-        float maxTime = 3.0f;
-        spawnInterval = minTime +
-            static_cast<float>(rand()) /
-            (static_cast<float>(RAND_MAX / (maxTime - minTime)));
-    }
+    entities.push_back(newObstacle);
+    spawnTimer = 0.0f;
+}
 
     for (Entity* e : entities)
         e->Update(deltaTime);
@@ -110,6 +111,10 @@ void Game::Update(float deltaTime)
     }
 
     score += deltaTime * 10.0f;
+
+    // aumenta gradualmente
+    difficultyMultiplier = 1.0f + (score / 400.0f);
+    gameSpeed = initialGameSpeed * difficultyMultiplier;
 }
 
 void Game::Render()

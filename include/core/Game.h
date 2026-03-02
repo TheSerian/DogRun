@@ -56,6 +56,9 @@ private:
 
     float gameSpeed;
     float initialGameSpeed;
+    float difficultyMultiplier = 1.0f;
+    float baseObstacleSpeed = 400.0f;
+    float baseSpawnInterval = 2.0f;
 
     bool CheckCollision(Entity* one, Entity* two);
 };
