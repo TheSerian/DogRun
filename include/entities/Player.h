@@ -22,8 +22,7 @@ public:
     void Update(float deltaTime) override;
     void Render(Renderer2D& renderer) override;
 
-    void SetState(PlayerState newState){ currentState = newState; }
-    PlayerState GetState() const { return currentState; }
+    void SetState(PlayerState newState);
 
 private:
     float velocityY;

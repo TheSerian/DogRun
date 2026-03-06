@@ -16,21 +16,30 @@ Player::Player(glm::vec2 pos, glm::vec2 size, Renderer2D& renderer)
 
 void Player::ProcessInput(GLFWwindow* window)
 {
-    if (currentState == PlayerState::GAME_OVER)
+    if (currentState == PlayerState::GAME_OVER) {
         return;
-
-    if (currentState == PlayerState::IDLE){
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        {
-            currentState = PlayerState::RUNNING;
-        }   
     }
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && onGround)
-    {
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && onGround) {
         velocityY = 400.0f;
         onGround = false;
         currentState = PlayerState::RUNNING;
+    }
+}
+
+void Player::SetState(PlayerState newState)
+{
+    currentState = newState;
+
+    if (newState == PlayerState::RUNNING) {
+        animationTimer = 0.0f;
+        useRunFrame1 = true;
+        velocityY = 0.0f;
+        onGround = true;
+    }
+
+    if (newState == PlayerState::GAME_OVER) {
+        velocityY = 0.0f;
     }
 }
 
