@@ -39,4 +39,11 @@ Este projeto segue rigorosamente o padrão técnico definido para a disciplina:
 | **Build system** | CMake |
 | **Sistema operacional alvo** | Windows (compatível com Linux) |
 
+## Como executar pelo código-fonte
 
+Dentro da pasta DogRun/build:
+```
+cmake ..
+make -j4
+./DogRun
+```

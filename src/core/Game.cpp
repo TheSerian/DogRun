@@ -56,7 +56,7 @@ void Game::ProcessInput(GLFWwindow* window)
     static bool restartPressed = false;
 
     if (state == GameState::IDLE) {
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
             state = GameState::Playing;
             player->SetState(PlayerState::RUNNING);
         }
